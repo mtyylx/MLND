@@ -13946,7 +13946,7 @@ JEkVZ7KXJKniTPaSJFWcyV6SpIr7/wGBAf15PG1EtwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">predictions_3</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -14011,7 +14011,7 @@ JEkVZ7KXJKniTPaSJFWcyV6SpIr7/wGBAf15PG1EtwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
@@ -14049,12 +14049,19 @@ JEkVZ7KXJKniTPaSJFWcyV6SpIr7/wGBAf15PG1EtwAAAABJRU5ErkJggg==
 <li><p>拆分的大原则是让绿色（存活）和红色（未存活）<strong>尽可能相互分离</strong>。如下图所示：</p>
 <ul>
 <li>观察三等舱男性按年龄的存活分布，如果只看十岁以下的区域，可以看到红色和绿色有一定重复，且红色略多于绿色。这时候如果全算作红色，那么就牺牲了绿色部分的正确率（大约八个人）。</li>
-<li>此时可以使用特征<code>SibSp</code>添加一个子分支，看是否能够将红绿重合部分进一步拆分。可以看到符合<code>SibSp &lt; 2</code>条件的孩子实际上都活了下来（大约七个人），而如果在决策树的上一层就判定的话，这部分将会被误判为未存活。现在通过添加特征，成功的分离了这一小部分的存活情况，提高了准确度。应用到求生的这个场景，大概就是说船上的兄弟姐妹越多，存活的可能性越低，可能原因是孩子太多父母顾不过来，因此存活率低。</li>
+<li>此时可以使用特征<code>SibSp</code>添加一个子分支，看是否能够将红绿重合部分进一步拆分。可以看到符合<code>SibSp &lt; 2</code>条件的孩子实际上都活了下来（大约七个人），而如果在决策树的上一层就判定的话，这部分将会被误判为未存活。现在通过添加特征，成功的分离了这一小部分的存活情况，提高了准确度。应用到求生的这个场景，大概就是说船上的兄弟姐妹越多，存活的可能性越低，可能原因是孩子太多父母顾不过来，因此存活率低。 <blockquote><p>确实一些特征会比另一些特征更有帮助（或者说更相关）。船舱等级、性别、年龄都是和存活率<strong>强相关</strong>的特征，至于是否有兄弟、父母、配偶这些特征则与存活率<strong>弱相关</strong>，仅在某些特定组合下可以进一步提高准确率。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>很受启发的评审意见</p>
+<blockquote><p>节选：...“很多特征看似没有包含什么信息，但是实际上可能和一些隐含的特征有强相关关系，所以也能作为纳入模型的变量。再比如“name”这个看似无关的变量，但是其中包含了“Mr”，“Mrs”甚至“Dr”等称呼，这些称呼可能会体现一些信息出来，也能作为有意义的指标。Domain knowledge很重要，但是拿到数据前的EDA（探索式数据分析）也是很重要的。”...“如果我们使用sklearn这个包的话，可以把准确率提升到90%以上，这是个机器学习的包，能够自动的在数据中寻找模式并对数据集进行分割，比我们一个特征一个特征的看要方便和快捷多了。”...</p>
+</blockquote>
+<ul>
+<li><strong>也许这就是为什么需要机器学习的原因吧。人类总是太看重因果，从而忽视那些没有必然的因果联系的特征。机器无法理解因果关系，但是却反而可以非常“扭曲”的学习训练数据集的特征，在很多情况下，确有奇效。</strong></li>
 </ul>
 </li>
 </ol>
-<blockquote><p>确实一些特征会比另一些特征更有帮助（或者说更相关）。船舱等级、性别、年龄都是和存活率<strong>强相关</strong>的特征，至于是否有兄弟、父母、配偶这些特征则与存活率<strong>弱相关</strong>，仅在某些特定组合下可以进一步提高准确率。</p>
-</blockquote>
 
 </div>
 </div>
@@ -14505,6 +14512,64 @@ qQL+P3gQ+fTYwLuuAAAAAElFTkSuQmCC
 >
 </div>
 
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">predictions_4</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    
+    <span class="c1"># Yet another solution, using features &quot;Embarked&quot; (which seemingly unrelavant...)</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;Sex&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;female&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;Pclass&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;Pclass&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;Embarked&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span> <span class="ow">or</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;Embarked&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Q&quot;</span><span class="p">:</span>
+                    <span class="n">pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;Pclass&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;SibSp&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pred</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                
+    <span class="c1"># Return our predictions</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+
+<span class="c1"># Make the predictions</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">predictions_4</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Predictions have an accuracy of 83.16%.
+</pre>
+</div>
 </div>
 
 </div>
