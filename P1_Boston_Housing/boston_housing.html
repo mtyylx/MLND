@@ -11806,7 +11806,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[154]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Import libraries necessary for this project</span>
@@ -11853,7 +11853,7 @@ div#notebook {
 </div>
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[154]:</div>
+<div class="prompt output_prompt">Out[2]:</div>
 
 
 <div class="output_html rendered_html output_subarea output_execute_result">
@@ -14012,7 +14012,13 @@ gg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>回答: </strong>
-网格搜索就是通过穷举所有特征值的可能组合来寻找最优模型的方法。叫网格搜索是因为这些参数的组合会形成一个N维的表格，看上去像个网格。不过似乎现在已经证明随机的搜索性能会比网格搜索还要好。</p>
+网格搜索本质上是利用<strong>穷举的思想</strong>尝试不同的参数组合来确定最优模型。不过具体到实现上，网格搜索并不是完全的穷举（那样运算量太大了），而是：</p>
+<ul>
+<li>Step #1：让用户直接指明要搜索哪几个参数，并限定这些个参数要搜索的取值范围（这里的参数指的是<strong>模型自身的参数</strong>，而不是训练数据的特征参数，对于决策树来说主要是树的深度，对于神经网络来说主要是隐藏层数等），这样网格搜索就可以根据这些信息构造出来一个搜索空间（本质上是这些参数取值的排列组合，每个组合都对应一个模型）。</li>
+</ul>
+<ul>
+<li>Step #2：然后再用训练数据集来跑这些模型，选出训练出来的模型中评分最好的作为最终模型。其中这里所说的评分对于分类模型可能是F1 Score，对于回归模型可能是$R^2$。这个训练很多个模型然后挑选最优模型的过程，就是模型参数本身的调优过程，由于本质上这是寻找参数分布规律（即参数的参数）的操作，因此也被称为超参数搜索（Hyper-parameter Search）。</li>
+</ul>
 
 </div>
 </div>
@@ -14033,10 +14039,95 @@ gg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>答案: </strong>
-K-Fold CV说的是一种划分训练集和验证集的方式，能够有效的提高模型的平均精确度。如果只用网格搜索和一般的分段划分，而不用K-Fold CV，那么得到的所谓“最优解”可能并不是真正的最优解。
-具体的来说，<strong>所划分的训练集和验证集的分布是否一致，会很程度上影响模型的性能</strong>。如果两者是一致的，那么网格搜索出的最优解就是真的最优解，如果两者差别很大，比如训练集中A特征特别重要，但验证集中B特征特别重要，那么网格搜索出的“最优解”可能性能也很差，原因是它训练出来的模型只能用于预测<strong>符合训练数据集统计特征的数据</strong>，因此并不是真正的最优解。K-Fold CV通过多次尝试求平均从统计角度上规避了这种情况的出现，搭配网格搜索，可以确保网格搜索的解是真的最优解。</p>
-<p>cv_results所含的应该是通过网格搜索加K-Fold得到的最优解的信息，包括各个划分的得分、训练的得分、测试的得分等等。</p>
+<p><strong>答案: 三个问题，依次回答如下。</strong></p>
+<hr>
+<p><strong>问：什么是K折交叉验证法（k-fold cross-validation）？</strong></p>
+<ul>
+<li>答：在解释K折交叉验证法之前，首先让我们来看看没有交叉验证法是什么样的。在没有交叉验证的时候，机器学习的数据集只分为训练集和测试集。用训练集训练出来的模型就已经是最终模型了，再把测试集放到我们的模型中跑来评估模型的泛化性能。要特别注意的是，这时候不管测试出来的结果好与坏，都已经成定局了，我们不能再用测试集来修正模型，那样就是作弊了，一方面违反了测试集不能参与模型构建和训练的规定，一方面手头再也没有模型没用过的数据了。此时的测试集也就变相成为训练集，得出的性能评分只能评估bias不能评估variance，即使模型出现过拟合也意识不到。<strong>那么如何做到即不动测试集，又能够评估模型的泛化性能呢？</strong>为了避免上面这种没有回旋余地的窘境，解决方案就是我们把原训练集<code>Train</code>进一步拆分为<code>Train'</code>和<code>Validation</code>（即新训练集和验证集），其中验证集用来评估模型的泛化能力。这样，我们就成功做到在未使用测试集的前提下对模型的bias（用训练集）和variance（用验证集）进行评估。</li>
+</ul>
+
+<pre><code>
+┌────────────────────────────────────┬────────────┐
+│                Train               │    Test    │
+└────────────────────────────────────┴────────────┘
+↑                                    ↑
+┌───────────────────────┬────────────┐
+│         Train'        │ Validation │
+└───────────────────────┴────────────┘
+                        Pretend As Test</code></pre>
+<p>而<strong>K折交叉验证法</strong>就是在此基础上，将原训练集进一步等分为K段互斥子集，构造K套不同的训练集+验证集组合，其中每个组合依次使用K段中的1段作为验证集，剩下K-1段作为训练集。然后将模型用这K套数据集进行训练/评估，最后将这K次训练后用相应验证集评估得到的K个性能分数求平均作为模型的整体性能。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>问：优化模型时，使用K折交叉验证法对网格搜索有什么好处？</strong></p>
+<ul>
+<li>答：假设我们不用网格搜索 + K-Fold CV，而是直接用网格搜索 + Hold-out，可能会导致网格搜索得到的所谓“最优模型”并不是真正的最优模型，而如果用了K-Fold CV就可以减少这种可能性。这背后的原因在于数据集的分布和划分。<strong>机器学习所用的数据集有以下2个大前提：</strong></li>
+</ul>
+<ul>
+<li><p><strong>数据集本身能够代表真实世界中事物的趋势和分布</strong>。具体可以细分为两个维度：</p>
+<ul>
+<li><p><strong>纵向（时间维）</strong>：比如波士顿房价数据集，只能反应数据集采集的那个年代波士顿的房价，用于预测现在的波士顿肯定不现实。因为它不能代表当前波士顿房价的趋势和分布特性。</p>
+</li>
+<li><p><strong>横向（特征维）</strong>：数据集所提供的特征应该尽可能的全面。真实世界中，影响一个事物发展趋势的因素是相当复杂和多样的，如果数据集包含的特征过少，那么无论你怎么训练，都不可能进行准确的预测，因为忽略了一些重要因素。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>数据集内训练集和验证集的划分应尽可能保证独立同分布（I.I.D）</strong>。如果两者分布是一致的，那么网格搜索出的最优解就是真的最优解。如果两者的分布差别很大，比如训练集中A特征特别重要，但验证集中B特征特别重要，那么即使用网格搜索得到的“最优解”性能可能也很差，原因是它训练出来的模型只能用于预测<strong>符合训练集统计特征的数据</strong>，用在验证集上就不好使了，因此并不是针对整体数据集来说的最优解。K-Fold CV通过多次尝试求平均从统计角度上规避了这种情况的出现，搭配网格搜索，可以确保网格搜索的解是真的最优解。</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<p><strong>问：网格搜索是如何结合交叉验证来完成对最佳参数组合的选择的？</strong></p>
+<ul>
+<li>答：网格搜索负责hold住模型这边的参数调优，交叉验证负责hold住数据集这边确保分布平均打分。两者嵌套在一起，完成最佳参数组合的选择。（见下面我简单写的伪代码）</li>
+</ul>
+
+<pre><code>伪代码：
+
+1. 给网格搜索指明要搜索的参数和参数取值区间，假设一共有&lt;M&gt;种排列组合。
+
+2. for 模型参数组合i in range(M)：
+
+      for 训练集j in range(K)：
+
+          训练模型
+
+          用验证集j对模型评分存入score[j]
+
+      end
+
+      将score数组的平均值存入mean_score[i]
+
+   end
+
+3. 选择mean_score最大的模型参数组合作为最终模型。</code></pre>
+<hr>
+<p><code>cv_results_</code>不仅包含用户配置的搜索空间，也包含通过网格搜索加K-Fold得到的所有结论，包括各个split的训练得分和测试得分等等。</p>
+<p>以下面代码为例，可以看到sklearn中的网格搜索模型是如何具体构造出来的：</p>
+
+<pre><code>grid = GridSearchCV(estimator=regressor, param_grid=params, scoring=scoring_fnc, cv=cv_sets)</code></pre>
+<ul>
+<li><code>estimator</code> 要用的机器学习模型对象：这里实际上用的还是决策树。</li>
+<li><code>param_grid</code> 参数网格词典：用户需要提供他认为对该模型调优很重要的参数以及可能的取值（潜在的最优参数区间），这样就限定了网格搜索只在一个有限的空间内搜索，不会太耗费时间。词典的每一个键值对都是一个参与搜索的参数维度。键值对的键表示这个参数的名称，在这里用的是是决策树的深度。键值对的值是这个参数所需要搜索的取值列表，这里选择的要尝试的范围是1到10。参数的具体取值可以通过先画学习曲线来确定下大致的取值范围。</li>
+<li><code>scoring</code> 评分机制：指定评价模型好坏的评估参数，这里用的实际上就是$R^2$。</li>
+<li><code>cv</code> 交叉验证集：给出用来训练和验证用的数据集。这里使用了ShuffleSplit将原数据的训练集构造成为训练集和验证集。</li>
+</ul>
 
 </div>
 </div>
@@ -14264,16 +14355,331 @@ Predicted selling price for Client 3&#39;s home: $938,053.85
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>答案: </strong>
 建议销售价：</p>
-<ul>
-<li>Client A: \$408,800</li>
-<li>Client B: \$231,253</li>
-<li>Client C: \$938,053</li>
-</ul>
+
+<pre><code>- Client A: $408,800
+- Client B: $231,253
+- Client C: $938,053</code></pre>
 <p>价格挺合理的。</p>
 <ul>
-<li>Client C的价格最贵，因为人家有八个房间，其他两家只有四五间。</li>
-<li>房间数量相似，Client B比ClientA便宜的多，是因为Client B的社区比较穷，教育质量也低。</li>
+<li><p>首先可以将结果与一开始得到的所有房价数据的统计信息对比如下，可见房价的区间为105000至1024800，三个客户的建议价格都在这个取值区间内。</p>
+
+<pre><code>Minimum price: $105,000.00
+Maximum price: $1,024,800.00
+Mean price: $454,342.94
+Median price $438,900.00
+Standard deviation of prices: $165,171.13</code></pre>
+</li>
+<li><p>然后可以有针对性的看每个顾客的房型对应的房价数据的分布</p>
+</li>
 </ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Client A has Room == 4 由于相应样本较少，可以同时看一下原始数据及房价的统计数据</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RM&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">3.5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RM&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">4.5</span><span class="p">)]</span>
+<span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">MEDV</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="n">a</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>count         5.000000
+mean     357420.000000
+std      166334.052437
+min      184800.000000
+25%      249900.000000
+50%      289800.000000
+75%      485100.000000
+max      577500.000000
+Name: MEDV, dtype: float64
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[18]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>RM</th>
+      <th>LSTAT</th>
+      <th>PTRATIO</th>
+      <th>MEDV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>353</th>
+      <td>3.561</td>
+      <td>7.12</td>
+      <td>20.2</td>
+      <td>577500.0</td>
+    </tr>
+    <tr>
+      <th>355</th>
+      <td>3.863</td>
+      <td>13.33</td>
+      <td>20.2</td>
+      <td>485100.0</td>
+    </tr>
+    <tr>
+      <th>357</th>
+      <td>4.138</td>
+      <td>37.97</td>
+      <td>20.2</td>
+      <td>289800.0</td>
+    </tr>
+    <tr>
+      <th>367</th>
+      <td>4.368</td>
+      <td>30.63</td>
+      <td>20.2</td>
+      <td>184800.0</td>
+    </tr>
+    <tr>
+      <th>389</th>
+      <td>4.138</td>
+      <td>23.34</td>
+      <td>20.2</td>
+      <td>249900.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>可以看到数据集中4间房左右的房价均值为35万，标准差为16万，考虑到另外两种特征的分布，因此Client A建议40万是合适的。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Client B has Room == 5</span>
+<span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RM&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">4.5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RM&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">5.5</span><span class="p">)]</span><span class="o">.</span><span class="n">MEDV</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count        36.000000
+mean     293416.666667
+std      101980.105903
+min      105000.000000
+25%      217350.000000
+50%      296100.000000
+75%      374325.000000
+max      497700.000000
+Name: MEDV, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>可以看到数据集中5间房左右的房价均值为29万，标准差为10万，考虑到另外两种特征的分布，因此Client B建议23万是合适的。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Client C has Room == 9 由于样本较少，可以看一下8间房左右的房价统计数据</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RM&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RM&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)]</span>
+<span class="k">print</span> <span class="n">c</span><span class="o">.</span><span class="n">MEDV</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="n">c</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>count    7.000000e+00
+mean     9.081000e+05
+std      9.151164e+04
+min      7.896000e+05
+25%      8.442000e+05
+50%      8.988000e+05
+75%      9.775500e+05
+max      1.024800e+06
+Name: MEDV, dtype: float64
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[21]:</div>
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>RM</th>
+      <th>LSTAT</th>
+      <th>PTRATIO</th>
+      <th>MEDV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>97</th>
+      <td>8.069</td>
+      <td>4.21</td>
+      <td>18.0</td>
+      <td>812700.0</td>
+    </tr>
+    <tr>
+      <th>217</th>
+      <td>8.266</td>
+      <td>4.14</td>
+      <td>17.4</td>
+      <td>940800.0</td>
+    </tr>
+    <tr>
+      <th>218</th>
+      <td>8.040</td>
+      <td>3.13</td>
+      <td>17.4</td>
+      <td>789600.0</td>
+    </tr>
+    <tr>
+      <th>224</th>
+      <td>8.337</td>
+      <td>2.47</td>
+      <td>17.4</td>
+      <td>875700.0</td>
+    </tr>
+    <tr>
+      <th>225</th>
+      <td>8.247</td>
+      <td>3.95</td>
+      <td>17.4</td>
+      <td>1014300.0</td>
+    </tr>
+    <tr>
+      <th>245</th>
+      <td>8.259</td>
+      <td>3.54</td>
+      <td>19.1</td>
+      <td>898800.0</td>
+    </tr>
+    <tr>
+      <th>253</th>
+      <td>8.398</td>
+      <td>5.91</td>
+      <td>13.0</td>
+      <td>1024800.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>可以看到数据集中8间房左右的房价均值为90万，标准差为9万，考虑到另外两种特征的分布，因此Client C建议93万是合适的。</p>
 
 </div>
 </div>
@@ -16123,7 +16529,7 @@ dtype: float64
 <p><strong>答案：</strong></p>
 <ul>
 <li><p>问：它的表现是否符合你的预期？</p>
-<p>我多跑了几次，发现模型的性能并不稳定，于是写了一个测试模型鲁棒性能的函数，检查独立构造模型10次中每次最终模型的深度<code>depth</code>和针对测试集的分数<code>score</code>。然后发现模型最差的时候甚至能够得负分，就是说这时候模型还不如直接对原数据集平均得到的结果准确...不过最好的时候模型还能达到0.7分的高分。背后的原因不太清楚，也许是这个数据集本身分布不太均匀，每次对数据集划分训练集和测试集的时候分布不同，有的时候模型从训练集学到的东西能够准确的预测测试集，有的时候则不能（有点类似课程视频里举的那个不均匀的例子）</p>
+<p>我多跑了几次，发现模型的性能并不稳定，于是写了一个测试模型鲁棒性能的函数，检查独立构造模型10次中每次最终模型的深度<code>depth</code>和针对测试集的分数<code>score</code>。然后发现模型最差的时候甚至能够得负分，就是说这时候模型还不如直接对原数据集平均得到的结果准确...不过最好的时候模型还能达到0.7分的高分。考虑到已经使用了GridSearch和K-Fold CV，因此这种不稳定的现象应该不是模型本身参数的问题，也不是数据集本身划分不均匀导致的，而是<strong>数据集提供的特征根本就不够导致的</strong>（详见回答问题8的<strong>机器学习所用的数据集的2个大前提</strong>总结）。影响北京的房价的因素肯定远远不止数据集中这6个特征，还要考虑到政策调控和宏观经济走势的影响。因此这个数据集训练出来的模型的准确度和稳定性都不会太高。</p>
 </li>
 </ul>
 <ul>
