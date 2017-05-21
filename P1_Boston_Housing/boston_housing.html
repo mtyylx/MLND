@@ -11806,7 +11806,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Import libraries necessary for this project</span>
@@ -11853,7 +11853,7 @@ div#notebook {
 </div>
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt output_prompt">Out[1]:</div>
 
 
 <div class="output_html rendered_html output_subarea output_execute_result">
@@ -12070,7 +12070,7 @@ Standard deviation of prices: $165,171.13
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[156]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">r2_score</span>
@@ -12134,7 +12134,7 @@ Standard deviation of prices: $165,171.13
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[157]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Calculate the performance of this model</span>
@@ -12313,14 +12313,14 @@ AIEhuAEgMAQ3AASG4AaAwBDcABAYghsAAvP/KskgjYjvjLoAAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[158]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 
 
 <span class="c1"># TODO: Shuffle and split the data into training and testing subsets</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">prices</span><span class="p">,</span> <span class="n">train_size</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">prices</span><span class="p">,</span> <span class="n">train_size</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="k">print</span> <span class="s2">&quot;X_total: &quot;</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">shape</span>
 <span class="k">print</span> <span class="s2">&quot;y_total: &quot;</span><span class="p">,</span> <span class="n">prices</span><span class="o">.</span><span class="n">shape</span>
@@ -14166,7 +14166,7 @@ gg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[161]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Import &#39;make_scorer&#39;, &#39;DecisionTreeRegressor&#39;, and &#39;GridSearchCV&#39;</span>
@@ -14229,7 +14229,7 @@ gg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[162]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Fit the training data to the model using grid search</span>
@@ -14314,7 +14314,7 @@ gg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[163]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Produce a matrix for client data</span>
@@ -14682,6 +14682,75 @@ Name: MEDV, dtype: float64
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>可以看到数据集中8间房左右的房价均值为90万，标准差为9万，考虑到另外两种特征的分布，因此Client C建议93万是合适的。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#65281;&#20063;&#21487;&#20197;&#20351;&#29992;KNN&#65288;K&#36817;&#37051;&#65289;&#26469;&#39564;&#35777;&#25151;&#20215;&#25968;&#25454;&#39044;&#27979;&#30340;&#38752;&#35889;&#31243;&#24230;">&#65281;&#20063;&#21487;&#20197;&#20351;&#29992;KNN&#65288;K&#36817;&#37051;&#65289;&#26469;&#39564;&#35777;&#25151;&#20215;&#25968;&#25454;&#39044;&#27979;&#30340;&#38752;&#35889;&#31243;&#24230;<a class="anchor-link" href="#&#65281;&#20063;&#21487;&#20197;&#20351;&#29992;KNN&#65288;K&#36817;&#37051;&#65289;&#26469;&#39564;&#35777;&#25151;&#20215;&#25968;&#25454;&#39044;&#27979;&#30340;&#38752;&#35889;&#31243;&#24230;">&#182;</a></h3><p>将Client的特征信息用于寻找最近的5个数据点，然后看看这几个点的房价和预测值的差距是否合理，就能知道大概拟合的怎么样了。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestNeighbors</span>
+<span class="n">nb</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">()</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="c1"># Get the nearest 5 neighbors as reference</span>
+<span class="n">candidates</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">([</span><span class="n">client_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">return_distance</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> 
+<span class="k">print</span> <span class="n">candidates</span>
+<span class="k">print</span> <span class="s2">&quot;以第一个Client为例，其各项特征值为：&quot;</span>
+<span class="k">print</span> <span class="n">client_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;房价预测 = 408800&quot;</span>
+<span class="k">print</span> <span class="s2">&quot;KNN寻找到的最近训练数据点的各项特征值为：&quot;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span>
+    <span class="k">print</span> <span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">RM</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">LSTAT</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">PTRATIO</span><span class="p">),</span> <span class="s2">&quot;房价预测 =&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[101 168 382 232 381]]
+以第一个Client为例，其各项特征值为：
+[5, 17, 15] 房价预测 = 408800
+KNN寻找到的最近训练数据点的各项特征值为：
+5.628 16.65 14.7 房价预测 = 327600.0
+5.272 16.14 14.7 房价预测 = 275100.0
+6.004 17.1 15.2 房价预测 = 396900.0
+5.79 15.84 16.0 房价预测 = 426300.0
+5.951 17.92 16.4 房价预测 = 451500.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>注意由于之前的train_test_split已经将data的数据顺序重新采样打乱生成为X_train和y_train，因此这里面的存储顺序和主键顺序已经不再一致。所以使用KNN找到了最近五个训练数据点的编号是其存储顺序的编号，而不是主键。因此需要用iloc访问，而不是loc。</p>
 
 </div>
 </div>
