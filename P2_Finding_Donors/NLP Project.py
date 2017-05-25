@@ -45,31 +45,23 @@ def predict_word(sample, target, distance):
     first_list = next_word_rate(word_list, target)
     print "1st Missing Word: ", first_list.keys()
     if distance == 1:
-        return max(first_list, key=first_list.get)
-    cand2 = {}
-    cand2_set = set([])
+        return max(first_list, key=first_list.get)      # 返回可能性最大的单词
+    second_list = {}
+    second_set = set([])
+    # 计算第一个单词的每个假设下第二个单词的所有可能选项，存为一个装词典的词典
     for w in first_list:
-        curr = next_word_rate(word_list, w)
-        cand2[w] = curr
-        cand2_set.update(curr.keys())
-    possibility = {}
-    for w in cand2_set:
-        sum = 0
-        for item in cand2:
-            if w in cand2[item]:
-               sum += first_list[item] * cand2[item][w]
-        possibility[w] = sum
+        second_list[w] = next_word_rate(word_list, w)
+        second_set.update(second_list[w].keys())        # 将所有可能性单独存为一个set去重
+    result = {}
+    for sec in second_set:
+        total = 0
+        for mapping in second_list:
+            if sec in second_list[mapping]:
+                total += first_list[mapping] * second_list[mapping][sec]    # 全概率公式计算第二个单词每一种可能性的独立概率
+        result[sec] = total
 
-    print "Possible Candidates for 2nd Missing Word: ", cand2_set
-    comp = 0
-    result = ''
-    for i in possibility:
-        if possibility[i] > comp:
-            comp = possibility[i]
-            result = i
-        print 'key=', i, ' value=', possibility[i]
-
-    return result
+    print "2nd Missing Word: ", list(second_set)
+    return max(result, key=result.get)
 
 sample_memo = '''
 Milt, we're gonna need to go ahead and move you downstairs into storage B. We have some new people coming in, and we need all the space we can get. So if you could just go ahead and pack up your stuff and move it down there, that would be terrific, OK?
@@ -82,5 +74,8 @@ corrupted_memo = '''
 Yeah, I'm gonna --- you to go ahead --- --- complain about this. Oh, and if you could --- --- and sit at the kids' table, that'd be ---
 '''
 
-print predict_word(sample_memo, "could", 1)
+target = "could"
+distance = 2
+res = predict_word(sample_memo, target, distance)
+print 'The most likely word after <', target, '> is <', res, '>'
 
