@@ -20789,9 +20789,10 @@ f8qFJgAAAABJRU5ErkJggg==
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>可以看到，原来的6个特征向第0个主成分的投影是完全线性的，说明sklearn.pca求得的主成分的确是所有特征的线性组合，斜率是对所有系数的放大倍数（因为之前计算出的权重系数已经统一化简至1以内），截距是一个常数。因此可以直观的显示为如下的方程：</p>
 $$
-Dimension_{\,0} = k \cdot (w_0 \cdot \mathrm{Fresh} - w_1 \cdot \mathrm{Milk} - w_2 \cdot \mathrm{Grocery} + w_3 \cdot \mathrm{Frozen} - w_4 \cdot \mathrm{Dp} - w_5 \cdot \mathrm{Deli}) + intercept\\[2ex]
-$$$$
-\mathbf{w} = [0.18, \;-0.39, \;-0.43, \;0.19, \;-0.7, \;-0.14]
+\begin{aligned}
+&Dimension_{\,0} = k \cdot (w_0 \cdot \mathrm{Fresh} - w_1 \cdot \mathrm{Milk} - w_2 \cdot \mathrm{Grocery} + w_3 \cdot \mathrm{Frozen} - w_4 \cdot \mathrm{Dp} - w_5 \cdot \mathrm{Deli}) + intercept\\[2ex]
+&\mathbf{w} = [0.18, \;-0.39, \;-0.43, \;0.19, \;-0.7, \;-0.14]
+\end{aligned}
 $$
 </div>
 </div>
