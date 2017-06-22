@@ -20176,7 +20176,8 @@ Here are the outliers:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Rework-Answer">Rework Answer<a class="anchor-link" href="#Rework-Answer">&#182;</a></h3><ul>
+<h3 id="Rework-Answer">Rework Answer<a class="anchor-link" href="#Rework-Answer">&#182;</a></h3><p>这次在前几个问题中我已经重新选取了sample，没有再选属于这5个异常点之中的点（65），而是选了一个类似分布但是没有那么异常的点，因此这里移除异常点的时候不会受限制了。下面开始分析为什么移除异常点：</p>
+<ul>
 <li>如何判断Outlier是否应该去除？要看移除先后对模型产生的影响有多大。然而模型最终的目的是为了发掘隐藏的真相，或者用于预测新的数据。因此异常点的影响应该具体到是否会导致聚类划分准确度下降这类问题上。</li>
 </ul>
 <ul>
@@ -20286,6 +20287,9 @@ Before Remove Outliers: Cluster Accuracy = 0.87816091954, Silhouette Score = 0.4
 </ul>
 <ul>
 <li>原本我还想通过比对移除异常点前后的轮廓系数来说明问题，但是考虑到轮廓系数仅仅是每个点距离自己所属聚类中心和最近其他聚类中心的比例，这个参数顶多能够分析聚类的离散程度，但是聚类离散并不是聚类的错，而仅仅是一种数据的分布特征而已，显然越致密、相互分的越开的聚类轮廓系数得分越高，但这并不能够证明异常点对模型的影响力，因此轮廓系数不能作为移除异常点的依据。（不知道对不对？）</li>
+</ul>
+<ul>
+<li>结论：由于上面的计算显示移除异常点后的确能够提高模型的预测准确性（在具有Ground Truth的前提下），因此这里选择移除了这5个异常点。</li>
 </ul>
 
 </div>
