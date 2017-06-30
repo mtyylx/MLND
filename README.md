@@ -9,3 +9,5 @@ Udacity Machine Learning Courses.
 - [x] [**Project 2 - Finding Donors For CharityML**](https://github.com/mtyylx/MLND/blob/master/P2_Finding_Donors/finding_donors.ipynb)
 
 - [x] [**Project 3 - Create Customer Segments**](https://github.com/mtyylx/MLND/blob/master/P3_Create_Customer_Segments/customer_segments.ipynb)
+
+- [x] [**Project 4 - Smart Cab**](https://github.com/mtyylx/MLND/blob/master/P4_Smart_Cab/smartcab.ipynb)

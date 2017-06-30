@@ -61,7 +61,7 @@ class LearningAgent(Agent):
         def decay_cosine(a):
             self.epsilon = math.cos(a * self.trial_count)
 
-        # Hold epsilon at 1 during all training trials (in order to explore state-action as much as possible)
+        # Hold epsilon at 1 during all training trials (in order to explore state-action combination more efficiently)
         def decay_step(total_trials):
             if self.trial_count > total_trials:
                 self.epsilon = 0.0
@@ -74,8 +74,8 @@ class LearningAgent(Agent):
             self.alpha = 0.0
         else:
             self.trial_count += 1
-            # decay_exponential(0.99)
-            decay_step(300)
+            decay_exponential(0.99)
+            # decay_step(300)
 
         return None
 
