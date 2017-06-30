@@ -74,8 +74,8 @@ class LearningAgent(Agent):
             self.alpha = 0.0
         else:
             self.trial_count += 1
-            decay_exponential(0.99)
-            # decay_step(500)
+            # decay_exponential(0.99)
+            decay_step(300)
 
         return None
 
