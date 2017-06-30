@@ -2,7 +2,7 @@
 # Suppress matplotlib user warnings
 # Necessary for newer version of matplotlib
 import warnings
-warnings.filterwarnings("ignore", category = UserWarning, module = "matplotlib")
+warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 ###########################################
 
 import os
@@ -10,6 +10,7 @@ import time
 import random
 import importlib
 import csv
+
 
 class Simulator(object):
     """Simulates agents in a dynamic smartcab environment.
@@ -103,7 +104,8 @@ class Simulator(object):
             else:
                 self.log_filename = os.path.join("logs", "sim_no-learning.csv")
             
-            self.log_fields = ['trial', 'testing', 'parameters', 'initial_deadline', 'final_deadline', 'net_reward', 'actions', 'success']
+            self.log_fields = ['trial', 'testing', 'parameters', 'initial_deadline', 'final_deadline', 'net_reward',
+                               'actions', 'success', 'actions-0', 'actions-1', 'actions-2', 'actions-3', 'actions-4']
             self.log_file = open(self.log_filename, 'wb')
             self.log_writer = csv.DictWriter(self.log_file, fieldnames=self.log_fields)
             self.log_writer.writeheader()
@@ -209,11 +211,16 @@ class Simulator(object):
                     'final_deadline': self.env.trial_data['final_deadline'],
                     'net_reward': self.env.trial_data['net_reward'],
                     'actions': self.env.trial_data['actions'],
-                    'success': self.env.trial_data['success']
+                    'success': self.env.trial_data['success'],
+                    'actions-0': self.env.trial_data['actions'][0],
+                    'actions-1': self.env.trial_data['actions'][1],
+                    'actions-2': self.env.trial_data['actions'][2],
+                    'actions-3': self.env.trial_data['actions'][3],
+                    'actions-4': self.env.trial_data['actions'][4]
                 })
 
             # Trial finished
-            if self.env.success == True:
+            if self.env.success:
                 print "\nTrial Completed!"
                 print "Agent reached the destination."
             else:
@@ -298,7 +305,6 @@ class Simulator(object):
                 print "epsilon = {:.4f}; alpha = {:.4f}".format(a.epsilon, a.alpha)
             else:
                 print "Agent not set to learn."
-
                 
     def render(self, trial, testing=False):
         """ This is the GUI render display of the simulation. 

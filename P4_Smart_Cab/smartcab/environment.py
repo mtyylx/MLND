@@ -127,8 +127,8 @@ class Environment(object):
 
         start_heading = random.choice(self.valid_headings)
         distance = self.compute_dist(start, destination)
-        deadline = distance * 5 # 5 time steps per intersection away
-        if(self.verbose == True): # Debugging
+        deadline = distance * 5  # 5 time steps per intersection away
+        if self.verbose:  # Debugging
             print "Environment.reset(): Trial set up with start = {}, destination = {}, deadline = {}".format(start, destination, deadline)
 
         # Create a map of all possible initial positions
@@ -164,7 +164,6 @@ class Environment(object):
                 if positions[intersection] == list(): # No headings available for intersection
                     del positions[intersection] # Delete the intersection altogether
 
-    
             agent.reset(destination=(destination if agent is self.primary_agent else None), testing=testing)
             if agent is self.primary_agent:
                 # Reset metrics for this trial (step data will be set during the step)
@@ -186,7 +185,7 @@ class Environment(object):
         print "\-------------------"
         print ""
 
-        if(self.verbose == True): # Debugging
+        if self.verbose:  # Debugging
             print "Environment.step(): t = {}".format(self.t)
 
         # Update agents, primary first
@@ -326,16 +325,15 @@ class Environment(object):
                 heading = (-heading[1], heading[0])
 
         # Agent wants to perform no action:
-        elif action == None:
+        elif action is None:
             if light == 'green' and inputs['oncoming'] != 'left': # No oncoming traffic
                 violation = 1 # Minor violation
-
 
         # Did the agent attempt a valid move?
         if violation == 0:
             if action == agent.get_next_waypoint(): # Was it the correct action?
                 reward += 2 - penalty # (2, 1)
-            elif action == None and light != 'green': # Was the agent stuck at a red light?
+            elif action is None and light != 'green': # Was the agent stuck at a red light?
                 reward += 2 - penalty # (2, 1)
             else: # Valid but incorrect
                 reward += 1 - penalty # (1, 0)
@@ -348,13 +346,13 @@ class Environment(object):
                 state['heading'] = heading
         # Agent attempted invalid move
         else:
-            if violation == 1: # Minor violation
+            if violation == 1:  # Minor violation
                 reward += -5
-            elif violation == 2: # Major violation
+            elif violation == 2:  # Major violation
                 reward += -10
-            elif violation == 3: # Minor accident
+            elif violation == 3:  # Minor accident
                 reward += -20
-            elif violation == 4: # Major accident
+            elif violation == 4:  # Major accident
                 reward += -40
 
         # Did agent reach the goal after a valid move?
@@ -368,10 +366,10 @@ class Environment(object):
                 self.done = True
                 self.success = True
 
-                if(self.verbose == True): # Debugging
+                if self.verbose:  # Debugging
                     print "Environment.act(): Primary agent has reached destination!"
 
-            if(self.verbose == True): # Debugging
+            if self.verbose:  # Debugging
                 print "Environment.act() [POST]: location: {}, heading: {}, action: {}, reward: {}".format(location, heading, action, reward)
 
             # Update metrics
@@ -389,7 +387,7 @@ class Environment(object):
             self.trial_data['net_reward'] += reward
             self.trial_data['actions'][violation] += 1
 
-            if(self.verbose == True): # Debugging
+            if self.verbose:  # Debugging
                 print "Environment.act(): Step data: {}".format(self.step_data)
         return reward
 
