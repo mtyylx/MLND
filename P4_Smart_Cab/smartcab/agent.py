@@ -26,8 +26,8 @@ class LearningAgent(Agent):
         ###########
         self.trial_count = 0                    # Use as input for epsilon decay functions
 
-        self.overall_states = 96             # Size of Q-Table = Combination of states for all features = 2 * 4 * 4 * 3
-        self.overall_state_action = 96 * 4   # Combination of all possible state + valid actions = 2 * 4 * 4 * 3 * 4
+        self.overall_states = 384            # Size of Q-Table = States Combination of all features = 2 * 4 * 4 * 4 * 3
+        self.overall_state_action = 384 * 4  # Combination of all possible state + valid actions = 1536
         self.state_action_count = 0
 
     def reset(self, destination=None, testing=False):
@@ -51,7 +51,7 @@ class LearningAgent(Agent):
         def decay_frac(a):
             self.epsilon = 1.0 / a ** 2
 
-        # Exponential: a = 0.99, 300 training trials
+        # Exponential: a = 0.995, 600 training trials
         def decay_exponential(a):
             self.epsilon = a ** self.trial_count
 
@@ -74,8 +74,9 @@ class LearningAgent(Agent):
             self.alpha = 0.0
         else:
             self.trial_count += 1
-            decay_exponential(0.99)
-            # decay_step(300)
+            decay_exponential(0.995)
+            # decay_linear(0.05)
+            # decay_step(600)
 
         return None
 
@@ -93,8 +94,8 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set 'state' as a tuple of relevant data for the agent
-        # 选择4个基础特征，state是这四个特征所有状态的组合，应该一共有96种。（waypoint只会有三种状态）
-        state = (inputs['light'], inputs['oncoming'], inputs['left'], waypoint)
+        # 选择5个基础特征，state是这5个特征所有状态的组合，应该一共有384种。（waypoint只会有3种状态）
+        state = (inputs['light'], inputs['oncoming'], inputs['left'], inputs['right'], waypoint)
 
         return state
 
@@ -150,7 +151,11 @@ class LearningAgent(Agent):
             if random.random() < self.epsilon:
                 action = random.choice(self.valid_actions)  # Pick a random action from All 4 Valid Actions.
             else:
-                action = max(self.Q[state], key=self.Q[state].get)  # Get Key with max Q Score as action.
+                # action = max(self.Q[state], key=self.Q[state].get)  # Get Key with max Q Score as action.
+                # 需要考虑具有多个最大值的情况，应随机抽取
+                max_Q = max(self.Q[state].values())
+                max_candidate = [x for x in self.Q[state] if self.Q[state][x] == max_Q]
+                action = random.choice(max_candidate)
 
         """Hard Coded Driving Logic For Fun"""
         # if inputs['light'] == 'red':

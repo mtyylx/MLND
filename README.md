@@ -10,4 +10,4 @@ Udacity Machine Learning Courses.
 
 - [x] [**Project 3 - Create Customer Segments**](https://github.com/mtyylx/MLND/blob/master/P3_Create_Customer_Segments/customer_segments.ipynb)
 
-- [x] [**Project 4 - Smart Cab**](https://github.com/mtyylx/MLND/blob/master/P4_Smart_Cab/smartcab.ipynb)
+- [x] [**Project 4 - Smart Cab with Q-Learning**](https://github.com/mtyylx/MLND/blob/master/P4_Smart_Cab/smartcab.ipynb)

@@ -298,45 +298,45 @@ class Environment(object):
 
         # Agent wants to drive forward:
         if action == 'forward':
-            if light != 'green': # Running red light
-                violation = 2 # Major violation
-                if inputs['left'] == 'forward' or inputs['right'] == 'forward': # Cross traffic
-                    violation = 4 # Accident
+            if light != 'green':                                                        # Running red light
+                violation = 2                                                           # Major violation
+                if inputs['left'] == 'forward' or inputs['right'] == 'forward':         # Cross traffic
+                    violation = 4                                                       # Accident
         
         # Agent wants to drive left:
         elif action == 'left':
-            if light != 'green': # Running a red light
-                violation = 2 # Major violation
-                if inputs['left'] == 'forward' or inputs['right'] == 'forward': # Cross traffic
-                    violation = 4 # Accident
-                elif inputs['oncoming'] == 'right': # Oncoming car turning right
-                    violation = 4 # Accident
-            else: # Green light
-                if inputs['oncoming'] == 'right' or inputs['oncoming'] == 'forward': # Incoming traffic
-                    violation = 3 # Accident
-                else: # Valid move!
+            if light != 'green':                                                        # Running a red light
+                violation = 2                                                           # Major violation
+                if inputs['left'] == 'forward' or inputs['right'] == 'forward':         # Cross traffic
+                    violation = 4                                                       # Accident
+                elif inputs['oncoming'] == 'right':                                     # Oncoming car turning right
+                    violation = 4                                                       # Accident
+            else:                                                                       # Green light
+                if inputs['oncoming'] == 'right' or inputs['oncoming'] == 'forward':    # Incoming traffic
+                    violation = 3                                                       # Accident
+                else:                                                                   # Valid move!
                     heading = (heading[1], -heading[0])
 
         # Agent wants to drive right:
         elif action == 'right':
-            if light != 'green' and inputs['left'] == 'forward': # Cross traffic
-                violation = 3 # Accident
-            else: # Valid move!
+            if light != 'green' and inputs['left'] == 'forward':        # Cross traffic
+                violation = 3                                           # Accident
+            else:                                                       # Valid move!
                 heading = (-heading[1], heading[0])
 
         # Agent wants to perform no action:
         elif action is None:
-            if light == 'green' and inputs['oncoming'] != 'left': # No oncoming traffic
-                violation = 1 # Minor violation
+            if light == 'green' and inputs['oncoming'] != 'left':       # No oncoming traffic
+                violation = 1                                           # Minor violation
 
         # Did the agent attempt a valid move?
         if violation == 0:
-            if action == agent.get_next_waypoint(): # Was it the correct action?
-                reward += 2 - penalty # (2, 1)
-            elif action is None and light != 'green': # Was the agent stuck at a red light?
-                reward += 2 - penalty # (2, 1)
+            if action == agent.get_next_waypoint():     # Was it the correct action?
+                reward += 2 - penalty   # (2, 1)
+            elif action is None and light != 'green':   # Was the agent stuck at a red light?
+                reward += 2 - penalty   # (2, 1)
             else: # Valid but incorrect
-                reward += 1 - penalty # (1, 0)
+                reward += 1 - penalty   # (1, 0)
 
             # Move the agent
             if action is not None:
@@ -346,13 +346,13 @@ class Environment(object):
                 state['heading'] = heading
         # Agent attempted invalid move
         else:
-            if violation == 1:  # Minor violation
+            if violation == 1:      # Minor violation
                 reward += -5
-            elif violation == 2:  # Major violation
+            elif violation == 2:    # Major violation
                 reward += -10
-            elif violation == 3:  # Minor accident
+            elif violation == 3:    # Minor accident
                 reward += -20
-            elif violation == 4:  # Major accident
+            elif violation == 4:    # Major accident
                 reward += -40
 
         # Did agent reach the goal after a valid move?
