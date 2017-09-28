@@ -20,6 +20,6 @@ Udacity Machine Learning Courses.
 
 - [**Dynamic Visualization of Class Activation Maps**](https://github.com/mtyylx/MLND/blob/master/P6_Dogs_VS_Cats/Class%20Activation%20Map%20Visualizations.ipynb)
 
-- [**CIFAR10 Image Classification using Keras**](https://github.com/mtyylx/MLND/blob/master/P5_Image_Classification/CIFAR10%20Image%20Classification%20using%20Keras%20(Concise).ipynb) 
+- [**CIFAR10 Image Classification using Keras**: 89% test accuracy](https://github.com/mtyylx/MLND/blob/master/P5_Image_Classification/CIFAR10%20Image%20Classification%20using%20Keras%20(Concise).ipynb) 
 
-- [**MNIST Image Classification using Keras**](https://github.com/mtyylx/MLND/blob/master/P5_Image_Classification/MNIST%20Image%20Classification%20using%20Keras.ipynb)
+- [**MNIST Image Classification using Keras**: 99.5% test accuracy](https://github.com/mtyylx/MLND/blob/master/P5_Image_Classification/MNIST%20Image%20Classification%20using%20Keras.ipynb)
