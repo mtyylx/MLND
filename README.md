@@ -14,11 +14,11 @@ Udacity Machine Learning Courses.
 
 - [x] [**Project 5 - Image Classification of CIFAR-10 using TensorFlow**](https://github.com/mtyylx/MLND/blob/master/P5_Image_Classification/image_classification_ZH-CN.ipynb)
 
-- [ ] Project 6 - Cats VS Dogs (Ongoing)
+- [ ] [**Project 6 - Cats VS Dogs using Transfer Learning**](https://github.com/mtyylx/MLND/blob/master/P6_Dogs_VS_Cats/Dog%20VS%20Cat%20-%20Experimenting%20With%20Transfer%20Learning.ipynb)
 
 # Side Projects
 
-- [**Dynamic Visualization of Class Activation Maps**](https://github.com/mtyylx/MLND/blob/master/P6_Dogs_VS_Cats/Class%20Activation%20Map%20Visualizations.ipynb)
+- [**Class Activation Maps (CAM) - Dynamic Visualization**](https://github.com/mtyylx/MLND/blob/master/P6_Dogs_VS_Cats/Class%20Activation%20Map%20Visualizations.ipynb)
 
 - [**CIFAR10 Image Classification using Keras**: 89% test accuracy](https://github.com/mtyylx/MLND/blob/master/P5_Image_Classification/CIFAR10%20Image%20Classification%20using%20Keras%20(Concise).ipynb) 
 
